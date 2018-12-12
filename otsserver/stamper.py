@@ -20,7 +20,7 @@ from bitcoin.core import COIN, b2lx, b2x, CTxIn, CTxOut, CTransaction, str_money
 from bitcoin.core.script import CScript, OP_RETURN
 
 from opentimestamps.bitcoin import cat_sha256d
-from opentimestamps.core.notary import BitcoinBlockHeaderAttestation
+from opentimestamps.core.notary import BitcoinBlockHeaderAttestation, BitcoinTestnetBlockHeaderAttestation
 from opentimestamps.core.op import OpPrepend, OpSHA256
 from opentimestamps.core.timestamp import Timestamp, make_merkle_tree
 
@@ -84,8 +84,11 @@ def make_timestamp_from_block_tx(confirmed_tx, block, blockheight):
     # Build the merkle tree
     merkleroot_stamp = make_btc_block_merkle_tree(block_txid_stamps)
     assert merkleroot_stamp.msg == block.hashMerkleRoot
-
-    attestation = BitcoinBlockHeaderAttestation(blockheight)
+    
+    if bitcoin.params.NAME.lower() == "testnet":
+        attestation = BitcoinTestnetBlockHeaderAttestation(blockheight)
+    else:
+        attestation = BitcoinBlockHeaderAttestation(blockheight)
     merkleroot_stamp.attestations.add(attestation)
 
     return digest_timestamp

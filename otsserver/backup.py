@@ -10,7 +10,7 @@
 # in the LICENSE file.
 
 from bitcoin.core import b2x
-from opentimestamps.core.notary import TimeAttestation, BitcoinBlockHeaderAttestation
+from opentimestamps.core.notary import TimeAttestation, BitcoinBlockHeaderAttestation, BitcoinTestnetBlockHeaderAttestation
 from opentimestamps.core.op import Op
 from opentimestamps.core.serialize import BytesSerializationContext, BytesDeserializationContext, TruncationError, \
     StreamSerializationContext
@@ -290,7 +290,7 @@ class AskBackup(threading.Thread):
             # Verify all bitcoin attestation are valid
             logging.debug("Total attestations: " + str(len(attestations)))
             for key, attestation in attestations.items():
-                if attestation.__class__ == BitcoinBlockHeaderAttestation:
+                if attestation.__class__ == BitcoinBlockHeaderAttestation or attestation.__class__ == BitcoinTestnetBlockHeaderAttestation:
                     blockhash = proxy.getblockhash(attestation.height)
                     block_header = proxy.getblockheader(blockhash)
                     # the following raise an exception and block computation if the attestation does not verify
